@@ -85,6 +85,7 @@ public:
         new_item->next = _itt;
         _itt->prev->next = new_item;
         _itt->prev = new_item;
+        amount++;
     }
 
     void remove(int index) {
@@ -151,32 +152,68 @@ private:
     list_item<T>* head;
 };
 
+template <typename T>
+class stack_item {
+public:
+    stack_item* prev;
+    T _value;
+
+    template <typename T>
+    stack_item(T elem, stack_item* tail) {
+        _value = elem;
+        prev = tail;
+    }
+};
+
+template <typename T>
+class stack {
+public:
+    int amount;
+    stack() {
+        head = nullptr;
+        amount = 0;
+    }
+    ~stack()
+    {
+        
+    }
+
+    template <typename T>
+    void push(T element) {
+        stack_item<T>* new_item = new stack_item<T>(element, head);
+        head = new_item;
+        amount++;
+    }
+
+    T peak() {
+        return head->_value;
+    }
+
+    T pop() {
+        stack_item<T>* _itt = head;
+        head = head->prev;
+        T ret = _itt->_value;
+        delete _itt;
+        amount--;
+        return ret;
+    }
+
+private:
+    stack_item<T>* head;
+};
+
 int main()
 {
-    list<int>* l = new list<int>();
-    l->add(5);
-    l->add(6);
-    l->add(7);
-    l->add(8);
-    l->add(12);
-    l->add(53);
-    l->add(9);
-
-
-    l->print();
-
-    l->remove(1);
-    l->insert(2, 99);
-    l->print();
-
-    cout << (*l)[2] << endl;
-
-    int* arr1 = l->toarray();
-    for (int i = 0; i < l->amount; i++)
-    {
-        cout << arr1[i];
-    }
-    delete arr1;
-    delete l;
+    stack<int>* s = new stack<int>();
+    s->push(20);
+    s->push(40);
+    s->push(60);
+    s->push(80);
+    cout << s->peak() << endl;
+    cout << s->peak() << endl;
+    cout << s->pop() << endl;
+    cout << s->pop() << endl;
+    cout << s->pop() << endl;
+    cout << s->pop() << endl;
 }
 
