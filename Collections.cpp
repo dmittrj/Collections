@@ -202,8 +202,76 @@ private:
     stack_item<T>* head;
 };
 
+template <typename T>
+class queue_item {
+public:
+    queue_item* next;
+    queue_item* prev;
+    T _value;
+
+    template <typename T>
+    queue_item(T elem) {
+        _value = elem;
+    }
+};
+
+template <typename T>
+class queue {
+public:
+    int amount;
+    queue() {
+        head = nullptr;
+        tail = nullptr;
+        amount = 0;
+    }
+    ~queue()
+    {
+
+    }
+
+    template <typename T>
+    void enqueue(T element) {
+        queue_item<T>* new_item = new queue_item<T>(element);
+        new_item->next = head;
+        new_item->prev = nullptr;
+        if (head != nullptr) head->prev = new_item;
+        head = new_item;
+        if (amount == 0) tail = new_item;
+        amount++;
+    }
+
+    T peak() {
+        return tail->_value;
+    }
+
+    T dequeue() {
+        queue_item<T>* _itt = tail;
+        tail = tail->prev;
+        T ret = _itt->_value;
+        delete _itt;
+        amount--;
+        return ret;
+    }
+
+private:
+    queue_item<T>* head;
+    queue_item<T>* tail;
+};
+
 int main()
 {
+    queue<int>* q = new queue<int>();
+    q->enqueue(20);
+    q->enqueue(40);
+    q->enqueue(60);
+    q->enqueue(80);
+    cout << q->peak() << endl;
+    cout << q->peak() << endl;
+    cout << q->dequeue() << endl;
+    cout << q->dequeue() << endl;
+    cout << q->dequeue() << endl;
+    cout << q->dequeue() << endl << endl;
+
     stack<int>* s = new stack<int>();
     s->push(20);
     s->push(40);
