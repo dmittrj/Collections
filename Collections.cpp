@@ -20,9 +20,10 @@ public:
 template <typename T>
 class list {
 public:
-    list_item<T>* head;
+    int amount;
     list() {
         head = new list_item<T>(0, nullptr);
+        amount = 0;
     }
     ~list()
     {
@@ -65,6 +66,25 @@ public:
                 _itt = _itt->next;
             }
         }
+        amount++;
+    }
+
+    void insert(int index, T element) {
+        if (amount < index) return;
+        list_item<T>* _itt = head;
+        for (int i = 0; i < index + 1; i++)
+        {
+            if (_itt->next == nullptr) {
+                return;
+            }
+            else {
+                _itt = _itt->next;
+            }
+        }
+        list_item<T>* new_item = new list_item<T>(element, _itt->prev);
+        new_item->next = _itt;
+        _itt->prev->next = new_item;
+        _itt->prev = new_item;
     }
 
     void remove(int index) {
@@ -83,15 +103,27 @@ public:
             _itt->next->prev = _itt->prev;
         }
         delete _itt;
+        amount--;
     }
 
-    template <typename T>
+    T* toarray() {
+        if (head == nullptr) return nullptr;
+        T* arr = new T[amount]; 
+        list_item<T>* _itt = head->next;
+        for (int i = 0; i < amount; i++)
+        {
+            arr[i] = _itt->_value;
+            _itt = _itt->next;
+        }
+        return arr;
+    }
+
     T operator[](int index) {
         list_item<T>* _itt = head;
         for (int i = 0; i < index + 1; i++)
         {
             if (_itt->next == nullptr) {
-                return 0;
+                return _itt->_value;
             }
             else {
                 _itt = _itt->next;
@@ -102,34 +134,49 @@ public:
 
     void print() {
         list_item<T>* _itt = head;
+        int i = 0;
         while (true)
         {
             if (_itt->next == nullptr) {
                 break;
             }
             else {
-                cout << "Element >> " << _itt->next->_value << endl;
+                cout << "Element [" << i++ << "] > " << _itt->next->_value << endl;
                 _itt = _itt->next;
             }
         }
     }
+
+private:
+    list_item<T>* head;
 };
 
 int main()
 {
     list<int>* l = new list<int>();
-
     l->add(5);
     l->add(6);
     l->add(7);
     l->add(8);
+    l->add(12);
+    l->add(53);
+    l->add(9);
+
+
     l->print();
 
     l->remove(1);
+    l->insert(2, 99);
     l->print();
 
-    //cout << (*l)[2];
+    cout << (*l)[2] << endl;
 
+    int* arr1 = l->toarray();
+    for (int i = 0; i < l->amount; i++)
+    {
+        cout << arr1[i];
+    }
+    delete arr1;
     delete l;
 }
 
